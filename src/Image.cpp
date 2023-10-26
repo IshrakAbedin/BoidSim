@@ -98,3 +98,8 @@ void Image::Write(const char *path)
 
     stbi_write_png(path, m_Width, m_Height, CHANNELS, static_cast<void*>(m_Buffer), m_Width * CHANNELS);
 }
+
+void Image::Clear()
+{
+    std::memset(m_Buffer, 0, m_Width * m_Height * CHANNELS);
+}

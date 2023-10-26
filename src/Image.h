@@ -36,5 +36,5 @@ public:
 
     inline void Write(const std::string& path) { Write(path.c_str()); }
     void Write(const char *path);
-    inline void Clear() { std::memset(m_Buffer, 0, m_Width * m_Height * CHANNELS); }
+    void Clear();
 };
