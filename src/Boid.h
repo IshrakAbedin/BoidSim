@@ -34,7 +34,7 @@ namespace Boid
 
 	class Entity : public ColoredShape2D // Pure Virtual Class
 	{
-	private:
+	protected:
 		unsigned long long m_ID;
 		Type m_Type;
 		State m_CurrentState;
@@ -83,11 +83,15 @@ namespace Boid
 	private:
 		double m_PredatorAttractionScale;
 		double m_PreyRepelScale;
+		std::shared_ptr<Arm2D> m_Shape;
 	public:
 		Prey(State initialState, double predatorAttractionScale = 12.0, double preyRepelScale = 0.5,
 			double maxVelocity = 25.0, Color color = NamedColors::FrenchViolet)
 			: Entity(Type::PREY, initialState, maxVelocity, color),
-			m_PredatorAttractionScale{ predatorAttractionScale }, m_PreyRepelScale{ preyRepelScale } { }
+			m_PredatorAttractionScale{ predatorAttractionScale }, m_PreyRepelScale{ preyRepelScale }
+		{
+			m_Shape = std::make_shared<Arm2D>(20.0, 30.0, color);
+		}
 
 		virtual Vec2 ProvideAcceleration(const Entity& other) const override;
 		virtual void Draw(Image& image) const override;
@@ -98,11 +102,15 @@ namespace Boid
 	private:
 		double m_PreyRepelScale;
 		double m_PredatorRepelScale;
+		std::shared_ptr<Arm2D> m_Shape;
 	public:
 		Predator(State initialState, double preyRepelScale = 1.0, double predatorRepelScale = 0.75,
 			double maxVelocity = 35.0, Color color = NamedColors::Orange)
 			: Entity(Type::PREDATOR, initialState, maxVelocity, color),
-			m_PreyRepelScale{ preyRepelScale }, m_PredatorRepelScale{ predatorRepelScale } { }
+			m_PreyRepelScale{ preyRepelScale }, m_PredatorRepelScale{ predatorRepelScale }
+		{
+			m_Shape = std::make_shared<Arm2D>(30.0, 45.0, color);
+		}
 
 		virtual Vec2 ProvideAcceleration(const Entity& other) const override;
 		virtual void Draw(Image& image) const override;

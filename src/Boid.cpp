@@ -49,6 +49,25 @@ namespace Boid
 	void Prey::Draw(Image& image) const
 	{
 		DrawCircle(image, CurrentState().Displacement, 10.0, GetColor());
+		static Vec2 upVec{ 0.0, 1.0 };
+		Vec2 directionVec{ 0.0, 1.0 };
+		if(! blaze::isZero(CurrentState().Velocity))
+			directionVec = UnitVector2(CurrentState().Velocity);
+		double angle = blaze::acos(blaze::dot(upVec, directionVec));
+		double sign = directionVec[0] <= 0.0 ? 1.0 : -1.0;
+
+		double velocityRatio = Clamp((blaze::length(CurrentState().Velocity) / m_MaxVelocity), 0.1, 1.0);
+
+
+		Transform2D rotation{ Transform::Rotate2D(sign * angle) };
+		Transform2D scale{ Transform::Scale2D(1.0, velocityRatio) };
+		Transform2D translation{
+			Transform::Translate2D(CurrentState().Displacement[0],
+			CurrentState().Displacement[1])
+		};
+
+		m_Shape->SetTransformation(translation * rotation * scale);
+		m_Shape->Draw(image);
 	}
 
 	Vec2 Predator::ProvideAcceleration(const Entity& other) const
@@ -70,6 +89,25 @@ namespace Boid
 	void Predator::Draw(Image& image) const
 	{
 		DrawCircle(image, CurrentState().Displacement, 15.0, GetColor());
+		static Vec2 upVec{ 0.0, 1.0 };
+		Vec2 directionVec{ 0.0, 1.0 };
+		if (!blaze::isZero(CurrentState().Velocity))
+			directionVec = UnitVector2(CurrentState().Velocity);
+		double angle = blaze::acos(blaze::dot(upVec, directionVec));
+		double sign = directionVec[0] <= 0.0 ? 1.0 : -1.0;
+
+		double velocityRatio = Clamp((blaze::length(CurrentState().Velocity) / m_MaxVelocity), 0.1, 1.0);
+
+
+		Transform2D rotation{ Transform::Rotate2D(sign * angle) };
+		Transform2D scale{ Transform::Scale2D(1.0, velocityRatio) };
+		Transform2D translation{
+			Transform::Translate2D(CurrentState().Displacement[0],
+			CurrentState().Displacement[1])
+		};
+
+		m_Shape->SetTransformation(translation * rotation * scale);
+		m_Shape->Draw(image);
 	}
 
 	void Simulator::SimulateNext()
