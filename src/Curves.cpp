@@ -252,3 +252,14 @@ Image& DrawCurve(Image& image, CurveType curveType, const std::vector<Point>& po
 
 	return image;
 }
+
+Point GetPointOnBezierCurve(const std::vector<Point>& points, double t)
+{
+	blaze::StaticMatrix<double, 2UL, 4UL> G =
+	{
+		{points[0].X, points[1].X, points[2].X, points[3].X},
+		{points[0].Y, points[1].Y, points[2].Y, points[3].Y}
+	};
+
+	return G * B_Bezier * Tfunc(t);
+}

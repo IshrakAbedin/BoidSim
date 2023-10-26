@@ -34,12 +34,18 @@ namespace Boid
 
 	class Entity : public ColoredShape2D // Pure Virtual Class
 	{
-	protected:
+	private:
 		unsigned long long m_ID;
 		Type m_Type;
 		State m_CurrentState;
 		State m_NextState;
 		double m_MaxVelocity;
+
+	protected:
+		inline Type& EntityType() { return m_Type; }
+		inline State& CurrentState() { return m_CurrentState; }
+		inline State& NextState() { return m_NextState; }
+		inline double& MaxVelocity() { return m_MaxVelocity; }
 
 	public:
 		Entity(Type type, State initialState, double maxVelocity, Color color)
@@ -50,13 +56,10 @@ namespace Boid
 		inline bool operator==(const Entity& other) { return Equals(other); }
 		inline bool operator!=(const Entity& other) { return !Equals(other); }
 
-		inline Type& EntityType() { return m_Type; }
-		inline State& CurrentState() { return m_CurrentState; }
-		inline State& NextState() { return m_NextState; }
-
 		inline const Type& EntityType() const { return m_Type; }
 		inline const State& CurrentState() const { return m_CurrentState; }
 		inline const State& NextState() const { return m_NextState; }
+		inline const double& MaxVelocity() const { return m_MaxVelocity; }
 
 		virtual void UpdateNextState(Vec2 acceleration, double timeStep = 1.0);
 		void SetNextToCurrentState() { m_CurrentState = m_NextState; }
@@ -77,6 +80,7 @@ namespace Boid
 		virtual Vec2 ProvideAcceleration(const Entity& other) const override;
 		virtual void Draw(Image& image) const override;
 	};
+
 
 	class Prey : public Entity
 	{
@@ -128,5 +132,40 @@ namespace Boid
 		void SimulateNext();
 		void SetNextToCurrentState();
 		void Draw(Image& image) const;
+	};
+
+	// MakeShift: Should be converted to something modular later
+	class AttractorRotationSytem
+	{
+	private:
+		std::vector<Point> m_ControlPointsSet0;
+		std::vector<Point> m_ControlPointsSet1;
+		double m_IncrementAmount;
+		double m_CurrentAmount;
+
+	public:
+		AttractorRotationSytem(const std::vector<Point>& cp0,
+			const std::vector<Point>& cp1, double incrementAmount)
+			: m_ControlPointsSet0{ cp0 }, m_ControlPointsSet1{ cp1 },
+			m_IncrementAmount{ incrementAmount }, m_CurrentAmount{ 0.0 } { }
+
+		Point NextPoint();
+	};
+
+	// A Makeshift class that will be driven using an AttractorRotationSystem
+	class SystemDrivenAttractor : public Attractor
+	{
+	private:
+		AttractorRotationSytem m_ARS;
+	public:
+		SystemDrivenAttractor(const AttractorRotationSytem& ars,
+			double preyAttractionScale = 10.0, double maxVelocity = 50.0,
+			Color color = NamedColors::BloodRed)
+			: m_ARS{ ars }, Attractor(State{}, preyAttractionScale, maxVelocity, color)
+		{
+			CurrentState().Displacement = m_ARS.NextPoint();
+		}
+
+		virtual void UpdateNextState(Vec2 acceleration, double timeStep = 1.0) override;
 	};
 }

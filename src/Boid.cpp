@@ -1,4 +1,8 @@
 #include "Boid.h"
+
+#include <cmath>
+#include <iostream>
+
 #include "Util.h"
 
 
@@ -30,6 +34,12 @@ namespace Boid
 		DrawCircle(image, CurrentState().Displacement, 5.0, GetColor());
 	}
 
+	void SystemDrivenAttractor::UpdateNextState(Vec2 acceleration, double timeStep)
+	{
+		// m_NextState = m_CurrentState;
+		NextState().Displacement = m_ARS.NextPoint();
+	}
+
 	Vec2 Prey::ProvideAcceleration(const Entity& other) const
 	{
 		Vec2 direction;
@@ -56,7 +66,7 @@ namespace Boid
 		double angle = blaze::acos(blaze::dot(upVec, directionVec));
 		double sign = directionVec[0] <= 0.0 ? 1.0 : -1.0;
 
-		double velocityRatio = Clamp((blaze::length(CurrentState().Velocity) / m_MaxVelocity), 0.1, 1.0);
+		double velocityRatio = Clamp((blaze::length(CurrentState().Velocity) / MaxVelocity()), 0.1, 1.0);
 
 
 		Transform2D rotation{ Transform::Rotate2D(sign * angle) };
@@ -96,7 +106,7 @@ namespace Boid
 		double angle = blaze::acos(blaze::dot(upVec, directionVec));
 		double sign = directionVec[0] <= 0.0 ? 1.0 : -1.0;
 
-		double velocityRatio = Clamp((blaze::length(CurrentState().Velocity) / m_MaxVelocity), 0.1, 1.0);
+		double velocityRatio = Clamp((blaze::length(CurrentState().Velocity) / MaxVelocity()), 0.1, 1.0);
 
 
 		Transform2D rotation{ Transform::Rotate2D(sign * angle) };
@@ -140,6 +150,16 @@ namespace Boid
 		{
 			entity->Draw(image);
 		}
+	}
+	Point AttractorRotationSytem::NextPoint()
+	{
+		float integralIncrement;
+		float fractionalIncrement = std::modf(m_CurrentAmount, &integralIncrement);
+		bool oddCurve = static_cast<int>(integralIncrement) % 2;
+		Point p = GetPointOnBezierCurve(oddCurve ? m_ControlPointsSet1 : m_ControlPointsSet0, fractionalIncrement);
+		m_CurrentAmount += m_IncrementAmount;
+		std::cout << "[Dbg P]: \n" << static_cast<Vec2>(p) << std::endl;
+		return p;
 	}
 }
 

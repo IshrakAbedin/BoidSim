@@ -22,3 +22,5 @@ Image& DrawCurve(Image& image, CurveType curveType, const std::vector<Point>& po
     const Color& curveColor = NamedColors::SapphireBlue, const Color& lineColor = NamedColors::BloodRed,
     const Color& tangentColor = NamedColors::JadeGreen, const Color& circleColor = NamedColors::AlizarinCrimson,
     double samplingInterval = 0.001);
+
+Point GetPointOnBezierCurve(const std::vector<Point>& points, double t);
