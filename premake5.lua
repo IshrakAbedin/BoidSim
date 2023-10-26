@@ -12,7 +12,12 @@ workspace "Lab4"
    includedirs {
         "./src",
         "./src/include",
-        "./src/include/stb"
+        "./src/include/stb",
+        "./src/Boid",
+        "./src/Geometry",
+        "./src/Image",
+        "./src/MathUtil",
+        "./src/Scene"
     }
 
    files { "**.h", "**.hpp", "**.cpp", "**.cc", "**.cx", "**.c" }

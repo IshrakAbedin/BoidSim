@@ -8,6 +8,7 @@ constexpr double TIME_STEP = 0.5;
 
 constexpr double ATTRACTOR_PRAY_ATTRACTION_SCALE = 10.0;
 constexpr double ATTRACTOR_MAX_VELOCITY = 50.0;
+constexpr double ATTRACTOR_ROTATION_COUNT = 1.0;
 
 constexpr size_t PREY_COUNT = 10;
 constexpr double PREY_CENTROID_X = 700.0;
@@ -27,8 +28,6 @@ constexpr double PREDATOR_PREY_REPEL_SCALE = 10.0;
 constexpr double PREDATOR_PREDATOR_REPEL_SCALE = 25.0;
 constexpr double PREDATOR_MAX_VELOCITY = 45.0;
 
-constexpr double ATTRACTOR_ROTATION_COUNT = 1.0;
-
 
 int main()
 {
@@ -45,14 +44,13 @@ int main()
 	};
 
 	// Add an attractor
-	std::shared_ptr<Boid::Attractor> attractor{
+	boidSim.AddEntity(
 		std::make_shared<Boid::SystemDrivenAttractor>(
 			ADS,
 			ATTRACTOR_PRAY_ATTRACTION_SCALE,
 			ATTRACTOR_MAX_VELOCITY
 		)
-	};
-	boidSim.AddEntity(attractor);
+	);
 
 	// Add preys 
 	for (size_t i = 0u; i < PREY_COUNT; i++)
@@ -106,4 +104,3 @@ int main()
 	}
 	return 0;
 }
-
