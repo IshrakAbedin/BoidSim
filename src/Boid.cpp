@@ -34,12 +34,6 @@ namespace Boid
 		DrawCircle(image, CurrentState().Displacement, 5.0, GetColor());
 	}
 
-	void SystemDrivenAttractor::UpdateNextState(Vec2 acceleration, double timeStep)
-	{
-		// m_NextState = m_CurrentState;
-		NextState().Displacement = m_ARS.NextPoint();
-	}
-
 	Vec2 Prey::ProvideAcceleration(const Entity& other) const
 	{
 		Vec2 direction;
@@ -61,7 +55,7 @@ namespace Boid
 		DrawCircle(image, CurrentState().Displacement, 10.0, GetColor());
 		static Vec2 upVec{ 0.0, 1.0 };
 		Vec2 directionVec{ 0.0, 1.0 };
-		if(! blaze::isZero(CurrentState().Velocity))
+		if (!blaze::isZero(CurrentState().Velocity))
 			directionVec = UnitVector2(CurrentState().Velocity);
 		double angle = blaze::acos(blaze::dot(upVec, directionVec));
 		double sign = directionVec[0] <= 0.0 ? 1.0 : -1.0;
@@ -151,6 +145,7 @@ namespace Boid
 			entity->Draw(image);
 		}
 	}
+
 	Point AttractorRotationSytem::NextPoint()
 	{
 		float integralIncrement;
@@ -158,8 +153,12 @@ namespace Boid
 		bool oddCurve = static_cast<int>(integralIncrement) % 2;
 		Point p = GetPointOnBezierCurve(oddCurve ? m_ControlPointsSet1 : m_ControlPointsSet0, fractionalIncrement);
 		m_CurrentAmount += m_IncrementAmount;
-		std::cout << "[Dbg P]: \n" << static_cast<Vec2>(p) << std::endl;
 		return p;
+	}
+
+	void SystemDrivenAttractor::UpdateNextState(Vec2 acceleration, double timeStep)
+	{
+		NextState().Displacement = m_ADS->NextPoint();
 	}
 }
 

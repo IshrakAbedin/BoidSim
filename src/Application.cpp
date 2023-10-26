@@ -27,7 +27,7 @@ constexpr double PREDATOR_PREY_REPEL_SCALE = 10.0;
 constexpr double PREDATOR_PREDATOR_REPEL_SCALE = 25.0;
 constexpr double PREDATOR_MAX_VELOCITY = 45.0;
 
-constexpr double ATTRACTOR_ROTATION_COUNT = 3.0;
+constexpr double ATTRACTOR_ROTATION_COUNT = 1.0;
 
 
 int main()
@@ -35,16 +35,19 @@ int main()
 	char WritePath[1024]; // Will be used for C style string formatting as C++17 does not have required standard lib
 	Boid::Simulator boidSim{ TIME_STEP };
 
-	Boid::AttractorRotationSytem ARS{
-		std::vector<Point>{ {31, 510}, {105, 0}, {693, 1023}, {1020, 402} },
-		std::vector<Point>{ {1020, 402 }, {696, 0}, {33, 120}, {31, 510} },
-		(ATTRACTOR_ROTATION_COUNT * 2) / FRAME_COUNT
+	std::shared_ptr<Boid::iAttractorDrivingSystem> ADS{
+		std::make_shared<Boid::AttractorRotationSytem>
+		(
+			std::vector<Point>{ {31, 510}, {105, 1200}, {693, 1023}, {1020, 402} },
+			std::vector<Point>{ {1020, 402 }, {696, 0}, {33, 120}, {31, 510} },
+			(ATTRACTOR_ROTATION_COUNT * 2) / FRAME_COUNT
+		)
 	};
 
 	// Add an attractor
 	std::shared_ptr<Boid::Attractor> attractor{
 		std::make_shared<Boid::SystemDrivenAttractor>(
-			ARS,
+			ADS,
 			ATTRACTOR_PRAY_ATTRACTION_SCALE,
 			ATTRACTOR_MAX_VELOCITY
 		)

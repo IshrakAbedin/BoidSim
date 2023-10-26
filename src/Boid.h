@@ -134,8 +134,14 @@ namespace Boid
 		void Draw(Image& image) const;
 	};
 
-	// MakeShift: Should be converted to something modular later
-	class AttractorRotationSytem
+	// Interface for Attractor Driving System
+	class iAttractorDrivingSystem
+	{
+	public:
+		virtual Point NextPoint() = 0;
+	};
+
+	class AttractorRotationSytem : public iAttractorDrivingSystem
 	{
 	private:
 		std::vector<Point> m_ControlPointsSet0;
@@ -149,21 +155,21 @@ namespace Boid
 			: m_ControlPointsSet0{ cp0 }, m_ControlPointsSet1{ cp1 },
 			m_IncrementAmount{ incrementAmount }, m_CurrentAmount{ 0.0 } { }
 
-		Point NextPoint();
+		virtual Point NextPoint() override;
 	};
 
 	// A Makeshift class that will be driven using an AttractorRotationSystem
 	class SystemDrivenAttractor : public Attractor
 	{
 	private:
-		AttractorRotationSytem m_ARS;
+		std::shared_ptr<iAttractorDrivingSystem> m_ADS;
 	public:
-		SystemDrivenAttractor(const AttractorRotationSytem& ars,
+		SystemDrivenAttractor(std::shared_ptr<iAttractorDrivingSystem> ADS,
 			double preyAttractionScale = 10.0, double maxVelocity = 50.0,
 			Color color = NamedColors::BloodRed)
-			: m_ARS{ ars }, Attractor(State{}, preyAttractionScale, maxVelocity, color)
+			: m_ADS{ ADS }, Attractor(State{}, preyAttractionScale, maxVelocity, color)
 		{
-			CurrentState().Displacement = m_ARS.NextPoint();
+			CurrentState().Displacement = m_ADS->NextPoint();
 		}
 
 		virtual void UpdateNextState(Vec2 acceleration, double timeStep = 1.0) override;
