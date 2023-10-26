@@ -161,4 +161,3 @@ namespace Boid
 		NextState().Displacement = m_ADS->NextPoint();
 	}
 }
-

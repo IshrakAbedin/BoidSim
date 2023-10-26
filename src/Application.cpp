@@ -3,14 +3,14 @@
 #include "Boid.h"
 #include "Util.h"
 
-constexpr size_t FRAME_COUNT = 300;
-constexpr double TIME_STEP = 0.5;
+constexpr size_t FRAME_COUNT = 3000u;
+constexpr double TIME_STEP = 0.1;
 
 constexpr double ATTRACTOR_PRAY_ATTRACTION_SCALE = 10.0;
 constexpr double ATTRACTOR_MAX_VELOCITY = 50.0;
 constexpr double ATTRACTOR_ROTATION_COUNT = 1.0;
 
-constexpr size_t PREY_COUNT = 10;
+constexpr size_t PREY_COUNT = 10u;
 constexpr double PREY_CENTROID_X = 700.0;
 constexpr double PREY_CENTROID_Y = 700.0;
 constexpr double PREY_DEVIATION_X = 200.0;
@@ -19,7 +19,7 @@ constexpr double PREY_PREDATOR_ATTRACTION_SCALE = 12.0;
 constexpr double PREY_PREY_REPEL_SCALE = 0.5;
 constexpr double PREY_MAX_VELOCITY = 35.0;
 
-constexpr size_t PREDATOR_COUNT = 3;
+constexpr size_t PREDATOR_COUNT = 3u;
 constexpr double PREDATOR_CENTROID_X = 500.0;
 constexpr double PREDATOR_CENTROID_Y = 500.0;
 constexpr double PREDATOR_DEVIATION_X = 450.0;
@@ -28,12 +28,12 @@ constexpr double PREDATOR_PREY_REPEL_SCALE = 10.0;
 constexpr double PREDATOR_PREDATOR_REPEL_SCALE = 25.0;
 constexpr double PREDATOR_MAX_VELOCITY = 45.0;
 
-
 int main()
 {
 	char WritePath[1024]; // Will be used for C style string formatting as C++17 does not have required standard lib
 	Boid::Simulator boidSim{ TIME_STEP };
 
+	// Add an attractor with Attractor Driving System (ADS)
 	std::shared_ptr<Boid::iAttractorDrivingSystem> ADS{
 		std::make_shared<Boid::AttractorRotationSytem>
 		(
@@ -43,7 +43,6 @@ int main()
 		)
 	};
 
-	// Add an attractor
 	boidSim.AddEntity(
 		std::make_shared<Boid::SystemDrivenAttractor>(
 			ADS,
@@ -88,7 +87,6 @@ int main()
 		);
 	}
 
-
 	// Simulate frames
 	Image image{ 1024, 1024, NamedColors::Black };
 	for (size_t i = 0u; i < FRAME_COUNT; i++)
@@ -102,5 +100,6 @@ int main()
 		image.Clear();
 		std::cout << "Completed Iteration: " << i << std::endl;
 	}
+
 	return 0;
 }
