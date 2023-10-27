@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 
 #include "Boid.h"
 #include "Util.h"
@@ -27,6 +28,9 @@ constexpr double PREDATOR_DEVIATION_Y = 450.0;
 constexpr double PREDATOR_PREY_REPEL_SCALE = 10.0;
 constexpr double PREDATOR_PREDATOR_REPEL_SCALE = 25.0;
 constexpr double PREDATOR_MAX_VELOCITY = 45.0;
+
+void PrintSimulationStatus(size_t currentFrameCount, size_t totalFrameCount,
+	std::chrono::time_point<std::chrono::high_resolution_clock> startTime);
 
 int main()
 {
@@ -89,6 +93,7 @@ int main()
 
 	// Simulate frames
 	Image image{ 1024, 1024, NamedColors::Black };
+	const auto startTime = std::chrono::high_resolution_clock::now();
 	for (size_t i = 0u; i < FRAME_COUNT; i++)
 	{
 		boidSim.SimulateNext();
@@ -98,8 +103,24 @@ int main()
 		std::sprintf(WritePath, "./Output/Image_%.4zu.png", i);
 		image.Write(WritePath);
 		image.Clear();
-		std::cout << "Completed Iteration: " << i << std::endl;
+		
+		//std::cout << "Completed Iteration: " << i << std::endl;
+		PrintSimulationStatus(i + 1, FRAME_COUNT, startTime);
 	}
+	std::cout << std::endl;
 
 	return 0;
+}
+
+void PrintSimulationStatus(size_t currentFrameCount, size_t totalFrameCount,
+	std::chrono::time_point<std::chrono::high_resolution_clock> startTime)
+{
+	auto currentTime = std::chrono::high_resolution_clock::now();
+	auto timeDifference = currentTime - startTime;
+	auto unitTime = timeDifference / currentFrameCount;
+	auto requiredTime = unitTime * (totalFrameCount - currentFrameCount);
+	double completionPercentage = (static_cast<double>(currentFrameCount) / totalFrameCount) * 100.0;
+	double secondCount = requiredTime.count() / (1000.0 * 1000.0 * 1000.0);
+	std::printf("Completed %5zu/%5zu frames [%.2f%%] :: Estimated Time Remaining: %7.2f seconds\r",
+		currentFrameCount, totalFrameCount, completionPercentage, secondCount);
 }
