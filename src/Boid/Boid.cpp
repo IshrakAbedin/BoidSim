@@ -146,12 +146,12 @@ namespace Boid
 		}
 	}
 
-	Point AttractorRotationSytem::NextPoint()
+	Point BezierDrivenADS::NextPoint()
 	{
 		float integralIncrement;
 		float fractionalIncrement = std::modf(m_CurrentAmount, &integralIncrement);
-		bool oddCurve = static_cast<int>(integralIncrement) % 2;
-		Point p = GetPointOnBezierCurve(oddCurve ? m_ControlPointsSet1 : m_ControlPointsSet0, fractionalIncrement);
+		size_t curveIndex = static_cast<size_t>(integralIncrement) % m_ControlPointSets.size();
+		Point p = GetPointOnBezierCurve(m_ControlPointSets[curveIndex], fractionalIncrement);
 		m_CurrentAmount += m_IncrementAmount;
 		return p;
 	}

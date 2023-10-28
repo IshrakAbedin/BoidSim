@@ -9,7 +9,7 @@ constexpr double TIME_STEP = 0.1;
 
 constexpr double ATTRACTOR_PRAY_ATTRACTION_SCALE = 10.0;
 constexpr double ATTRACTOR_MAX_VELOCITY = 50.0;
-constexpr double ATTRACTOR_ROTATION_COUNT = 1.0;
+constexpr double BEZIER_ADS_CYCLE_COUNT = 3.0;
 
 constexpr size_t PREY_COUNT = 10u;
 constexpr double PREY_CENTROID_X = 700.0;
@@ -29,8 +29,27 @@ constexpr double PREDATOR_PREY_REPEL_SCALE = 10.0;
 constexpr double PREDATOR_PREDATOR_REPEL_SCALE = 25.0;
 constexpr double PREDATOR_MAX_VELOCITY = 45.0;
 
+// A simple struct to hold and convert time from total seconds to hour, minutes, and seconds
+struct SimpleFormattedTime
+{
+	unsigned int Hours;
+	unsigned int Minutes;
+	double Seconds;
+
+	SimpleFormattedTime(double totalSeconds)
+	{
+		Hours = static_cast<unsigned int>(totalSeconds / (3600.0));
+		totalSeconds -= (Hours * 3600.0);
+		Minutes = static_cast<unsigned int>(totalSeconds / (60.0));
+		totalSeconds -= (Minutes * 60.0);
+		Seconds = totalSeconds;
+	}
+};
+
 void PrintSimulationStatus(size_t currentFrameCount, size_t totalFrameCount,
 	std::chrono::time_point<std::chrono::high_resolution_clock> startTime);
+
+void PrintCompletionTime(std::chrono::time_point<std::chrono::high_resolution_clock> startTime);
 
 int main()
 {
@@ -39,11 +58,15 @@ int main()
 
 	// Add an attractor with Attractor Driving System (ADS)
 	std::shared_ptr<Boid::iAttractorDrivingSystem> ADS{
-		std::make_shared<Boid::AttractorRotationSytem>
+		std::make_shared<Boid::BezierDrivenADS>
 		(
-			std::vector<Point>{ {31, 510}, {105, 1200}, {693, 1023}, {1020, 402} },
-			std::vector<Point>{ {1020, 402 }, {696, 0}, {33, 120}, {31, 510} },
-			(ATTRACTOR_ROTATION_COUNT * 2) / FRAME_COUNT
+			std::vector<std::vector<Point>>{
+				{ {31, 510}, {105, 1200}, {693, 1023}, {1020, 402} },
+				{ {1020, 402 }, {696, 0}, {33, 120}, {31, 510} },
+				{ {31, 510 }, {333, 510}, {680, 510}, {1020, 510} },
+				{ {1020, 510 }, {800, 810}, {600, 310}, {512, 512} }
+			},
+			BEZIER_ADS_CYCLE_COUNT / FRAME_COUNT
 		)
 	};
 
@@ -104,10 +127,10 @@ int main()
 		image.Write(WritePath);
 		image.Clear();
 		
-		//std::cout << "Completed Iteration: " << i << std::endl;
 		PrintSimulationStatus(i + 1, FRAME_COUNT, startTime);
 	}
 	std::cout << std::endl;
+	PrintCompletionTime(startTime);
 
 	return 0;
 }
@@ -120,7 +143,19 @@ void PrintSimulationStatus(size_t currentFrameCount, size_t totalFrameCount,
 	auto unitTime = timeDifference / currentFrameCount;
 	auto requiredTime = unitTime * (totalFrameCount - currentFrameCount);
 	double completionPercentage = (static_cast<double>(currentFrameCount) / totalFrameCount) * 100.0;
-	double secondCount = requiredTime.count() / (1000.0 * 1000.0 * 1000.0);
-	std::printf("Completed %5zu/%5zu frames [%.2f%%] :: Estimated Time Remaining: %7.2f seconds\r",
-		currentFrameCount, totalFrameCount, completionPercentage, secondCount);
+	double secondCount = std::chrono::duration_cast<std::chrono::milliseconds>(requiredTime).count() / 1000.0;
+	SimpleFormattedTime remainingTime{ secondCount };
+	std::printf("Completed %zu/%zu frames [%5.2lf%%] :: Estimated Time Remaining: %02u:%02u:%05.2lf\r",
+		currentFrameCount, totalFrameCount, completionPercentage, remainingTime.Hours,
+		remainingTime.Minutes, remainingTime.Seconds);
+}
+
+void PrintCompletionTime(std::chrono::time_point<std::chrono::high_resolution_clock> startTime)
+{
+	auto currentTime = std::chrono::high_resolution_clock::now();
+	auto elapsedSeconds =
+		std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() / 1000.0;
+	SimpleFormattedTime completionTime{ static_cast<double>(elapsedSeconds) };
+	std::printf("Completion Time: %02u:%02u:%05.2lf\n",
+		completionTime.Hours, completionTime.Minutes, completionTime.Seconds);
 }

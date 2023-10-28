@@ -141,19 +141,17 @@ namespace Boid
 		virtual Point NextPoint() = 0;
 	};
 
-	class AttractorRotationSytem : public iAttractorDrivingSystem
+	class BezierDrivenADS : public iAttractorDrivingSystem
 	{
 	private:
-		std::vector<Point> m_ControlPointsSet0;
-		std::vector<Point> m_ControlPointsSet1;
+		std::vector<std::vector<Point>> m_ControlPointSets;
 		double m_IncrementAmount;
 		double m_CurrentAmount;
 
 	public:
-		AttractorRotationSytem(const std::vector<Point>& cp0,
-			const std::vector<Point>& cp1, double incrementAmount)
-			: m_ControlPointsSet0{ cp0 }, m_ControlPointsSet1{ cp1 },
-			m_IncrementAmount{ incrementAmount }, m_CurrentAmount{ 0.0 } { }
+		BezierDrivenADS(const std::vector<std::vector<Point>>& controlPointSets, double incrementAmount)
+			: m_ControlPointSets{ controlPointSets }, m_IncrementAmount{ incrementAmount },
+			m_CurrentAmount{ 0.0 } { }
 
 		virtual Point NextPoint() override;
 	};
