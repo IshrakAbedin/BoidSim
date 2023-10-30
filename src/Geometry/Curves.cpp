@@ -261,5 +261,5 @@ Point GetPointOnBezierCurve(const std::vector<Point>& points, double t)
 		{points[0].Y, points[1].Y, points[2].Y, points[3].Y}
 	};
 
-	return G * B_Bezier * Tfunc(t);
+	return static_cast<Vec2>(G * B_Bezier * Tfunc(t));
 }
