@@ -1,8 +1,11 @@
 #include <iostream>
 #include <chrono>
+#include <filesystem>
 
 #include "Boid.h"
 #include "Util.h"
+
+#define OUTPUT_DIRECTORY "./Output"
 
 constexpr size_t FRAME_COUNT = 3000u;
 constexpr double TIME_STEP = 0.1;
@@ -114,7 +117,10 @@ int main()
 		);
 	}
 
-	// Simulate frames
+	// Create output directory if it does not exist
+	std::filesystem::create_directory(OUTPUT_DIRECTORY);
+	
+	// Simulate frames and write images
 	Image image{ 1024, 1024, NamedColors::Black };
 	const auto startTime = std::chrono::high_resolution_clock::now();
 	for (size_t i = 0u; i < FRAME_COUNT; i++)
@@ -123,7 +129,7 @@ int main()
 		boidSim.Draw(image);
 		boidSim.SetNextToCurrentState();
 
-		std::sprintf(WritePath, "./Output/Image_%.4zu.jpg", i);
+		std::sprintf(WritePath, OUTPUT_DIRECTORY "/Image_%.4zu.jpg", i);
 		image.Write(WritePath);
 		image.Clear();
 		
