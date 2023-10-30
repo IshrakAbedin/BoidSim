@@ -123,7 +123,7 @@ int main()
 		boidSim.Draw(image);
 		boidSim.SetNextToCurrentState();
 
-		std::sprintf(WritePath, "./Output/Image_%.4zu.png", i);
+		std::sprintf(WritePath, "./Output/Image_%.4zu.jpg", i);
 		image.Write(WritePath);
 		image.Clear();
 		
