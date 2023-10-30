@@ -1,5 +1,5 @@
 -- premake5.lua
-workspace "Lab4"
+workspace "BoidSim"
    configurations { "Debug", "Release" }
    
    project "Boid"
