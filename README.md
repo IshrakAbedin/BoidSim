@@ -66,6 +66,8 @@ Most of the major parameters for the simulation are set from `constexpr` values 
 ```C++
 // Application.cpp
 // ... ...
+#define OUTPUT_DIRECTORY "./Output"
+
 constexpr size_t FRAME_COUNT = 3000u;
 constexpr double TIME_STEP = 0.1;
 
