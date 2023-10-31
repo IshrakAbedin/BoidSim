@@ -94,3 +94,7 @@ constexpr double PREDATOR_PREDATOR_REPEL_SCALE = 25.0;
 constexpr double PREDATOR_MAX_VELOCITY = 45.0;
 // ... ...
 ```
+
+## Note
+
+Despite being unused, the `Boid` project holds source code for other graphical applications, such as different kinds of curve drawing, creation and manipulation of scene graphs, and so on. Originally, this project has been developed as a part of a bachelors computer science course (`CSE 4552`, *Computer Graphics and Multimedia Systems Lab*) that I (*Mohammad Ishrak Abedin, Lecturer, Department of Computer Science and Engineering (CSE), Islamic University of Technology (IUT)*) take. The aim of this project is to teach the students about particle systems.
