@@ -81,17 +81,17 @@ constexpr double PREY_CENTROID_Y = 700.0;
 constexpr double PREY_DEVIATION_X = 200.0;
 constexpr double PREY_DEVIATION_Y = 200.0;
 constexpr double PREY_PREDATOR_ATTRACTION_SCALE = 12.0;
-constexpr double PREY_PREY_REPEL_SCALE = 0.5;
-constexpr double PREY_MAX_VELOCITY = 35.0;
+constexpr double PREY_PREY_REPULSION_SCALE = 700;
+constexpr double PREY_MAX_VELOCITY = 45.0;
 
 constexpr size_t PREDATOR_COUNT = 3u;
 constexpr double PREDATOR_CENTROID_X = 500.0;
 constexpr double PREDATOR_CENTROID_Y = 500.0;
 constexpr double PREDATOR_DEVIATION_X = 450.0;
 constexpr double PREDATOR_DEVIATION_Y = 450.0;
-constexpr double PREDATOR_PREY_REPEL_SCALE = 10.0;
-constexpr double PREDATOR_PREDATOR_REPEL_SCALE = 25.0;
-constexpr double PREDATOR_MAX_VELOCITY = 45.0;
+constexpr double PREDATOR_PREY_REPEL_SCALE = 1500.0;
+constexpr double PREDATOR_PREDATOR_REPULSION_SCALE = 1100.0;
+constexpr double PREDATOR_MAX_VELOCITY = 55.0;
 // ... ...
 ```
 
