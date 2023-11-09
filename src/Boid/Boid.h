@@ -86,13 +86,13 @@ namespace Boid
 	{
 	private:
 		double m_PredatorAttractionScale;
-		double m_PreyRepelScale;
+		double m_PreyRepulsionScale;
 		std::shared_ptr<Arm2D> m_Shape;
 	public:
-		Prey(State initialState, double predatorAttractionScale = 12.0, double preyRepelScale = 0.5,
+		Prey(State initialState, double predatorAttractionScale = 12.0, double preyRepulsionScale = 0.5,
 			double maxVelocity = 25.0, Color color = NamedColors::FrenchViolet)
 			: Entity(Type::PREY, initialState, maxVelocity, color),
-			m_PredatorAttractionScale{ predatorAttractionScale }, m_PreyRepelScale{ preyRepelScale }
+			m_PredatorAttractionScale{ predatorAttractionScale }, m_PreyRepulsionScale{ preyRepulsionScale }
 		{
 			m_Shape = std::make_shared<Arm2D>(20.0, 30.0, color);
 		}
@@ -104,14 +104,14 @@ namespace Boid
 	class Predator : public Entity
 	{
 	private:
-		double m_PreyRepelScale;
-		double m_PredatorRepelScale;
+		double m_PreyRepulsionScale;
+		double m_PredatorRepulsionScale;
 		std::shared_ptr<Arm2D> m_Shape;
 	public:
-		Predator(State initialState, double preyRepelScale = 1.0, double predatorRepelScale = 0.75,
+		Predator(State initialState, double preyRepulsionScale = 1.0, double predatorRepulsionScale = 0.75,
 			double maxVelocity = 35.0, Color color = NamedColors::Orange)
 			: Entity(Type::PREDATOR, initialState, maxVelocity, color),
-			m_PreyRepelScale{ preyRepelScale }, m_PredatorRepelScale{ predatorRepelScale }
+			m_PreyRepulsionScale{ preyRepulsionScale }, m_PredatorRepulsionScale{ predatorRepulsionScale }
 		{
 			m_Shape = std::make_shared<Arm2D>(30.0, 45.0, color);
 		}
