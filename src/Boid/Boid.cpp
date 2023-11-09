@@ -41,7 +41,7 @@ namespace Boid
 		{
 		case Type::PREY: // Repels other preys
 			direction = other.CurrentState().Displacement - CurrentState().Displacement; // Away from self
-			return m_PreyRepelScale / (direction * direction); // Inverse quadratic acceleration
+			return (m_PreyRepelScale * UnitVector2(direction)) / (blaze::sqrLength(direction)); // Inverse quadratic acceleration
 		case Type::PREDATOR: // Attracts predators
 			direction = CurrentState().Displacement - other.CurrentState().Displacement; // Towards self
 			return m_PredatorAttractionScale * UnitVector2(direction); // Constant acceleration
@@ -81,10 +81,10 @@ namespace Boid
 		{
 		case Type::PREY: // Repels preys
 			direction = other.CurrentState().Displacement - CurrentState().Displacement; // Away from self
-			return m_PreyRepelScale / (direction * direction); // Inverse quadratic acceleration
+			return (m_PreyRepelScale * UnitVector2(direction)) / (blaze::sqrLength(direction)); // Inverse quadratic acceleration
 		case Type::PREDATOR: // Repels predators
 			direction = other.CurrentState().Displacement - CurrentState().Displacement; // Away from self
-			return m_PredatorRepelScale / (direction); // Inverse quadratic acceleration
+			return (m_PredatorRepelScale * UnitVector2(direction)) / (blaze::length(direction)); // Inverse linear acceleration
 		default: // No attraction or repel force towards other entities
 			return Vec2{ 0.0, 0.0 };
 		}
