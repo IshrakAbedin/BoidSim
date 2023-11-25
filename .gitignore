@@ -5,5 +5,4 @@ obj/*
 .vs/*
 *.make
 Makefile
-premake/*
 Output/*
