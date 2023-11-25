@@ -1,0 +1,70 @@
+name: C++ Builds with Premake 5
+
+on: [push]
+
+env:
+  PREMAKE_PATH_LINUX: ./premake/premake5
+  PREMAKE_PATH_WIN: ./premake/premake5.exe
+  SOLUTION_FILE_PATH: ./BoidSim.sln
+  BUILD_CONFIGURATION_RELEASE: Release
+  BUILD_CONFIGURATION_DEBUG: Debug
+
+jobs:
+  linux-clang:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Grant premake5 permission
+      run: chmod 777 ${{env.PREMAKE_PATH_LINUX}}
+    - name: Generate Project for GNU Make
+      run: ${{env.PREMAKE_PATH_LINUX}} --cc=clang gmake2
+
+    - name: Build - Debug
+      run: make config=debug
+
+    - name: Build - Release
+      run: make config=release
+
+  linux-gcc:
+    runs-on: ubuntu-latest
+
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up GCC 13
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: 13
+
+    - name: Grant premake5 permission
+      run: chmod 777 ${{env.PREMAKE_PATH_LINUX}}
+    - name: Generate Project for GNU Make
+      run: ${{env.PREMAKE_PATH_LINUX}} gmake2
+
+    - name: Build - Debug
+      run: make config=debug
+
+    - name: Build - Release
+      run: make config=release
+
+  win-msvc:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Generate Project for Visual Studio 2022
+      run: ${{env.PREMAKE_PATH_WIN}} vs2022
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3.1
+
+    - name: Build - Debug
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION_DEBUG}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Build - Release
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION_RELEASE}} ${{env.SOLUTION_FILE_PATH}}
